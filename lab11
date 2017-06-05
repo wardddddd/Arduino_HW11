@@ -1,0 +1,66 @@
+#include <MsTimer2.h>
+#include <LiquidCrystal.h> // include the library code
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // initialize interface pins
+ char a[7]="100000";
+void flash() {
+ int i=0;
+ while(Serial.available())
+ {
+  
+   a[i++] = Serial.read();
+  }
+ //*******************************************************
+   if(a[0]=='0'&&a[1]=='0'&&a[2]=='0'&&a[3]=='0'&&a[4]=='0'&&a[5]=='0')
+    {
+       Serial.write("X");
+        digitalWrite(13, HIGH);
+     }
+   else if(a[5]!='0')
+   {
+   a[5]--;  
+   }
+   else if(a[5]=='0'&&a[4]!='0')
+   {
+   a[4]--; a[5]='9';
+  }
+  else if(a[5]=='0'&&a[4]=='0'&&a[3]!='0')  
+   {
+   a[3]--;a[4]='5'; a[5]='9';
+  }
+   else if(a[5]=='0'&&a[4]=='0'&&a[3]=='0'&&a[2]!='0')  
+   {
+   a[2]--; a[3]='9';a[4]='5'; a[5]='9';
+  }
+  else if(a[5]=='0'&&a[4]=='0'&&a[3]=='0'&&a[2]=='0'&&a[1]!='0')  
+   {
+   a[1]--; a[2]='5';a[3]='9';a[4]='5'; a[5]='9';
+  }
+  else if(a[5]=='0'&&a[4]=='0'&&a[3]=='0'&&a[2]=='0'&&a[1]=='0'&&a[0]!='0')  
+   {
+   a[0]--; a[1]='9'; a[2]='5';a[3]='9';a[4]='5'; a[5]='9';
+  }
+  Serial.write(a);
+  Serial.println();
+  lcd.setCursor(0, 1);
+   lcd.write(a[0]); 
+    lcd.write(a[1]); 
+    lcd.write(":");
+    lcd.write(a[2]); 
+    lcd.write(a[3]); 
+    lcd.write(":");
+    lcd.write(a[4]); 
+    lcd.write(a[5]); 
+
+ 
+}
+
+void setup() {
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+  MsTimer2::set(1000, flash);
+  MsTimer2::start();
+  lcd.begin(20, 2);
+}
+void loop() {
+ 
+}
